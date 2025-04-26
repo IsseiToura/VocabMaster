@@ -7,6 +7,7 @@ import {
   Grid,
   Alert,
   Title,
+  Text,
 } from "@mantine/core";
 import { Plus } from "lucide-react";
 import "./CreateWords.css";

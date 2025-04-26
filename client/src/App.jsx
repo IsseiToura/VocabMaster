@@ -25,9 +25,9 @@ function AppRoutes() {
         path="/"
         element={
           isAuthenticated ? (
-            <Navigate to={`${BASE_PATH}/main`} replace />
+            <Navigate to="/main" replace />
           ) : (
-            <Navigate to={`${BASE_PATH}/auth`} replace />
+            <Navigate to="/auth" replace />
           )
         }
       />
@@ -35,22 +35,14 @@ function AppRoutes() {
       <Route
         path="/auth/*"
         element={
-          isAuthenticated ? (
-            <Navigate to={`${BASE_PATH}/main`} replace />
-          ) : (
-            <AuthLayout />
-          )
+          isAuthenticated ? <Navigate to="/main" replace /> : <AuthLayout />
         }
       />
 
       <Route
         path="/main/*"
         element={
-          isAuthenticated ? (
-            <MainLayout />
-          ) : (
-            <Navigate to={`${BASE_PATH}/auth`} replace />
-          )
+          isAuthenticated ? <MainLayout /> : <Navigate to="/auth" replace />
         }
       />
 
