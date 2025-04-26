@@ -1,0 +1,40 @@
+.app-shell-header {
+  background: linear-gradient(135deg, #6b46c1 0%, #3b82f6 100%);
+}
+
+.app-shell-navbar {
+  background-color: white;
+  padding: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .app-shell-navbar {
+    padding: 1rem;
+  }
+}
+
+.app-shell-navbar .mantine-Tabs-root {
+  width: 100%;
+}
+
+.app-shell-navbar .mantine-Tabs-list {
+  width: 100%;
+}
+
+.app-shell-navbar .mantine-Tabs-tab {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .app-shell-navbar .mantine-Tabs-tab {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+
+.app-shell-navbar .mantine-Tabs-tab:hover {
+  background-color: #f8f9fa;
+}
