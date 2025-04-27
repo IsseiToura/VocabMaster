@@ -25,7 +25,7 @@ function MainLayout() {
 
   return (
     <AppShell
-      header={{ height: { base: 50, sm: 60 } }}
+      header={{ height: { base: 80, sm: 60 } }}
       navbar={{
         width: { base: 250, sm: 300 },
         breakpoint: "sm",
@@ -52,7 +52,13 @@ function MainLayout() {
               </Title>
             </Group>
           </Group>
-          <Group>
+          <Group
+            gap="xs"
+            style={{
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: isMobile ? "flex-end" : "center",
+            }}
+          >
             <Text c="white" fw={500} fz={{ base: "sm", sm: "md" }}>
               {`Hello, ${user?.username}`}
             </Text>
@@ -72,16 +78,16 @@ function MainLayout() {
       <AppShell.Navbar className="app-shell-navbar">
         <Tabs orientation="vertical">
           <Tabs.List>
-            <Tabs.Tab value="create" component={Link} to="/main/create_words">
+            <Tabs.Tab value="create" component={Link} to="/main/create_words" onClick={isMobile ? toggle : undefined}>
               Create Words
             </Tabs.Tab>
-            <Tabs.Tab value="words" component={Link} to="/main/words">
+            <Tabs.Tab value="words" component={Link} to="/main/words" onClick={isMobile ? toggle : undefined}>
               Your Words
             </Tabs.Tab>
-            <Tabs.Tab value="practice" component={Link} to="/main/practice">
+            <Tabs.Tab value="practice" component={Link} to="/main/practice" onClick={isMobile ? toggle : undefined}>
               Practice
             </Tabs.Tab>
-            <Tabs.Tab value="history" component={Link} to="/main/history">
+            <Tabs.Tab value="history" component={Link} to="/main/history" onClick={isMobile ? toggle : undefined}>
               Practice Histories
             </Tabs.Tab>
           </Tabs.List>

@@ -8,6 +8,7 @@ import {
   Title,
   SegmentedControl,
   Button,
+  Container,
 } from "@mantine/core";
 import { Check, X } from "lucide-react";
 import PracticeCard from "../../../components/PracticeCard";
@@ -140,77 +141,88 @@ function Practice() {
 
   if (!showPractice) {
     return (
-      <Stack align="center" spacing="xl">
-        <Title order={1}>Choose your practice mode!</Title>
-        <Stack align="center" spacing="md">
-          <SegmentedControl
-            value={languageDirection}
-            onChange={setLanguageDirection}
-            size="xl"
-            data={[
-              { label: "English to Japanese", value: "english-to-japanese" },
-              { label: "Japanese to English", value: "japanese-to-english" },
-            ]}
-          />
-          <Button
-            size="xl"
-            onClick={() => setShowPractice(true)}
-            variant="gradient"
-            gradient={{ from: "indigo", to: "cyan" }}
-          >
-            Start Practice
-          </Button>
+      <Container size="xs" px="xs" style={{ width: '100%' }}>
+        <Stack align="center" spacing="xl">
+          <Title order={1} style={{ textAlign: 'center', wordBreak: 'keep-all' }}>Choose your practice mode!</Title>
+          <Stack align="center" spacing="md" style={{ width: '100%' }}>
+            <SegmentedControl
+              value={languageDirection}
+              onChange={setLanguageDirection}
+              size="md"
+              fullWidth
+              data={[
+                { label: <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>English to Japanese</span>, value: "english-to-japanese" },
+                { label: <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>Japanese to English</span>, value: "japanese-to-english" },
+              ]}
+              style={{ width: '100%', minWidth: 0 }}
+            />
+            <Button
+              size="xl"
+              onClick={() => setShowPractice(true)}
+              variant="gradient"
+              gradient={{ from: "indigo", to: "cyan" }}
+              fullWidth
+              style={{ minWidth: 0 }}
+            >
+              Start Practice
+            </Button>
+          </Stack>
         </Stack>
-      </Stack>
+      </Container>
     );
   }
 
   return (
-    <Stack align="center" spacing="xl">
-      <SegmentedControl
-        value={languageDirection}
-        onChange={setLanguageDirection}
-        size="xl"
-        data={[
-          { label: "English to Japanese", value: "english-to-japanese" },
-          { label: "Japanese to English", value: "japanese-to-english" },
-        ]}
-      />
-      <PracticeCard
-        word={currentCard.word}
-        meaning={currentCard.meaning}
-        isFlipped={isFlipped}
-        onFlip={() => setIsFlipped(!isFlipped)}
-      />
-      <Group>
-        <ActionIcon
-          variant="gradient"
-          gradient={{ from: "teal", to: "lime" }}
-          size="xl"
-          radius="xl"
-          onClick={handleCorrect}
-        >
-          <Check size={24} />
-        </ActionIcon>
-        <ActionIcon
-          variant="gradient"
-          gradient={{ from: "red", to: "pink" }}
-          size="xl"
-          radius="xl"
-          onClick={handleIncorrect}
-        >
-          <X size={24} />
-        </ActionIcon>
-      </Group>
-      <Progress
-        value={(currentCardIndex / words.length) * 100}
-        w={400}
-        color="violet"
-      />
-      <Text size="lg" fw={500}>
-        Progress: {currentCardIndex + 1}/{words.length}
-      </Text>
-    </Stack>
+    <Container size="xs" px="xs" style={{ width: '100%' }}>
+      <Stack align="center" spacing="xl">
+        <SegmentedControl
+          value={languageDirection}
+          onChange={setLanguageDirection}
+          size="md"
+          fullWidth
+          data={[
+            { label: <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>English to Japanese</span>, value: "english-to-japanese" },
+            { label: <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>Japanese to English</span>, value: "japanese-to-english" },
+          ]}
+          style={{ width: '100%', minWidth: 0 }}
+        />
+        <PracticeCard
+          word={currentCard.word}
+          meaning={currentCard.meaning}
+          isFlipped={isFlipped}
+          onFlip={() => setIsFlipped(!isFlipped)}
+        />
+        <Group>
+          <ActionIcon
+            variant="gradient"
+            gradient={{ from: "teal", to: "lime" }}
+            size="xl"
+            radius="xl"
+            onClick={handleCorrect}
+          >
+            <Check size={24} />
+          </ActionIcon>
+          <ActionIcon
+            variant="gradient"
+            gradient={{ from: "red", to: "pink" }}
+            size="xl"
+            radius="xl"
+            onClick={handleIncorrect}
+          >
+            <X size={24} />
+          </ActionIcon>
+        </Group>
+        <Progress
+          value={(currentCardIndex / words.length) * 100}
+          w="100%"
+          color="violet"
+          style={{ maxWidth: 400, width: '100%' }}
+        />
+        <Text size="lg" fw={500} style={{ textAlign: 'center' }}>
+          Progress: {currentCardIndex + 1}/{words.length}
+        </Text>
+      </Stack>
+    </Container>
   );
 }
 

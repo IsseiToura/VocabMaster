@@ -32,7 +32,8 @@ const wordValidator = () => {
       .optional()
       .custom((value) => {
         if (value === null || value === undefined || value === "") return true;
-        return Number.isInteger(value) && value >= 1 && value <= 9;
+        const num = Number(value);
+        return Number.isInteger(num) && num >= 1 && num <= 9;
       })
       .withMessage("IELTS Level must be a number between 1 and 9."),
   ];
