@@ -26,36 +26,45 @@ function YourWords() {
   const [newWord, setNewWord] = useState(null);
   const token = localStorage.getItem("jwt");
 
-  useEffect(() => {
-    const fetchWords = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `${API_BASE_URL}/your_words?page=${page}&limit=${limit}&sort=${sort}${
-            timeFilter ? `&timeFilter=${timeFilter}` : ""
-          }`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = await response.json();
-        if (data.success) {
-          setWords(data.data);
-          setTotalPages(data.pagination.pages);
-        } else {
-          setError(data.message);
+  const fetchWords = async (currentPage = 1) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${API_BASE_URL}/your_words?page=${currentPage}&limit=${limit}&sort=${sort}${
+          timeFilter ? `&timeFilter=${timeFilter}` : ""
+        }`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
+      );
+      const data = await response.json();
+      if (data.success) {
+        setWords(data.data);
+        setTotalPages(data.pagination.pages);
+        setPage(currentPage);
+      } else {
+        setError(data.message);
+        toast.error(data.message);
       }
-    };
-    fetchWords();
-  }, [page, limit, sort, timeFilter]);
+    } catch (error) {
+      setError(error.message);
+      toast.error("Failed to fetch words");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWords(1);
+  }, [sort, timeFilter]);
+
+  useEffect(() => {
+    fetchWords(page);
+  }, [page]);
+
   const handleDeleteWord = async (wordId) => {
     try {
       const response = await fetch(`${API_BASE_URL}/your_words/${wordId}`, {
@@ -66,15 +75,17 @@ function YourWords() {
         },
       });
       if (response.ok) {
-        setWords(words.filter((word) => word._id !== wordId));
+        toast.success("Word deleted successfully");
+        // Refresh the current page after deletion
+        fetchWords(page);
       }
-      setLoading(false);
-      toast.success("Word deleted successfully");
     } catch (error) {
       setError(error.message);
+      toast.error("Failed to delete word");
     }
   };
-  const createWords = async () => {
+
+  const createWords = () => {
     const emptyWord = {
       word: "",
       pronunciation: "",
@@ -105,28 +116,12 @@ function YourWords() {
       });
       const data = await response.json();
       if (data.success) {
-        setPage(1);
         setNewWord(null);
-        const refreshResponse = await fetch(
-          `${API_BASE_URL}/your_words?page=1&limit=${limit}&sort=${sort}${
-            timeFilter ? `&timeFilter=${timeFilter}` : ""
-          }`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const refreshData = await refreshResponse.json();
-        if (refreshData.success) {
-          setWords(refreshData.data);
-          setTotalPages(refreshData.pagination.pages);
-        }
         toast.success("Word created successfully");
+        // Refresh the first page after creating new word
+        fetchWords(1);
       } else {
         if (data.errors) {
-          // Display each validation error message
           data.errors.forEach((error) => {
             toast.error(`${error.path}: ${error.msg}`);
           });
@@ -153,7 +148,6 @@ function YourWords() {
             onChange={(value) => {
               if (value) {
                 setSort(value);
-                setPage(1);
               }
             }}
             data={[
@@ -164,9 +158,7 @@ function YourWords() {
           <Select
             value={timeFilter}
             onChange={(value) => {
-              if (value !== null) {
-                setTimeFilter(value);
-              }
+              setTimeFilter(value || "");
             }}
             data={[
               { value: "", label: "All Time" },

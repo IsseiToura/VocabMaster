@@ -58,9 +58,6 @@ exports.getYourWords = asyncHandler(async (req, res) => {
   // Determine sort order
   const sortOrder = sort === "oldest" ? 1 : -1;
 
-  // Get total count for pagination
-  const total = await YourWord.countDocuments(query);
-
   // Convert page and limit to numbers
   const pageNum = parseInt(page, 10);
   const limitNum = parseInt(limit, 10);
@@ -102,6 +99,30 @@ exports.getYourWords = asyncHandler(async (req, res) => {
     { $limit: limitNum },
   ]);
 
+  // Get total count for pagination after applying filters
+  const total = await YourWord.aggregate([
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(query.userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "words",
+        localField: "wordId",
+        foreignField: "_id",
+        as: "wordId",
+      },
+    },
+    { $unwind: "$wordId" },
+    ...(Object.keys(timeFilterMatch).length > 0
+      ? [{ $match: timeFilterMatch }]
+      : []),
+    { $count: "total" },
+  ]);
+
+  const totalCount = total.length > 0 ? total[0].total : 0;
+
   // Check if no words found for the specified time period
   if (timeFilter && yourWords.length === 0) {
     return res.status(404).json({
@@ -113,7 +134,7 @@ exports.getYourWords = asyncHandler(async (req, res) => {
   // Generate pagination links
   const paginationLinks = generatePaginationLinks(
     req,
-    total,
+    totalCount,
     pageNum,
     limitNum
   );
@@ -122,10 +143,10 @@ exports.getYourWords = asyncHandler(async (req, res) => {
     success: true,
     data: yourWords,
     pagination: {
-      total,
+      total: totalCount,
       page: pageNum,
       limit: limitNum,
-      pages: Math.ceil(total / limitNum),
+      pages: Math.ceil(totalCount / limitNum),
       links: paginationLinks,
     },
   });
